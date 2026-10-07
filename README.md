@@ -189,13 +189,19 @@ The Power BI report contains three main analytical pages:
 
 Provides a high-level summary of ride demand and important demand indicators.
 
+![Power BI Demand Overview](images/powerbi_demand_overview.png)
+
 ### Demand Analysis
 
 Explores temporal demand patterns, including changes in demand across different hours and days.
 
+![Power BI Demand Analysis](images/powerbi_demand_analysis.png)
+
 ### Location Analysis
 
 Examines geographical demand patterns across boroughs and pickup zones.
+
+![Power BI Location Analysis](images/powerbi_location_analysis.png)
 
 Power BI is maintained as a **separate analytics component** and is not embedded inside the Streamlit prediction interface.
 
@@ -245,8 +251,6 @@ These features allow the model to use both calendar information and historical d
 ---
 
 ## 🤖 Demand Prediction Model
-
-Several stages of model development are used to build the demand prediction component.
 
 The final prediction system uses a **Histogram-Based Gradient Boosting Regressor (HGB Regressor)** implemented with Scikit-learn.
 
@@ -332,6 +336,16 @@ The application then displays:
 - Prediction hour
 
 The underlying feature generation and prediction process is handled automatically by the backend, keeping the interface simple for the user.
+
+### Application Preview
+
+#### Demand Prediction Interface
+
+![Streamlit Demand Prediction Interface](images/streamlit_prediction_1.png)
+
+#### Prediction Result
+
+![Streamlit Demand Prediction Result](images/streamlit_prediction_2.png)
 
 ---
 
@@ -419,8 +433,6 @@ The system successfully returns different demand predictions based on the select
 
 ## 📁 Project Structure
 
-A simplified structure of the project is shown below:
-
 ```text
 Ride_Hailing_Demand_Prediction/
 │
@@ -431,27 +443,45 @@ Ride_Hailing_Demand_Prediction/
 │   └── app.py
 │
 ├── data/
-│   ├── raw/
 │   └── processed/
+│       └── hourly_zone_demand_2025_01.parquet
+│
+├── images/
+│   ├── powerbi_demand_analysis.png
+│   ├── powerbi_demand_overview.png
+│   ├── powerbi_location_analysis.png
+│   ├── streamlit_prediction_1.png
+│   └── streamlit_prediction_2.png
 │
 ├── models/
 │   ├── final_hgb_demand_model.joblib
 │   └── model_features.joblib
 │
-├── notebooks/
-│
 ├── powerbi/
+│   └── dashboard.pbix
+│
+├── python/
+│   ├── 01_data_understanding.ipynb
+│   ├── 02_data_cleaning.ipynb
+│   ├── 03_eda.ipynb
+│   ├── 04_feature_engineering.ipynb
+│   └── 05_model_training.ipynb
 │
 ├── sql/
+│   ├── 01_create_tables.sql
+│   ├── 02_data_validation.sql
+│   ├── 03_demand_analysis.sql
+│   ├── 04_advanced_analysis.sql
+│   └── analysis.ipynb
 │
-├── report/
-│
+├── .gitignore
 ├── requirements.txt
-│
 └── README.md
 ```
 
-The exact directory contents may contain additional notebooks, datasets, analysis outputs, reports, and supporting project files.
+Large raw and intermediate datasets are excluded from the repository using `.gitignore`.
+
+The small hourly demand dataset required by the prediction API is included so that the application can access the historical demand information required for prediction.
 
 ---
 
@@ -460,11 +490,9 @@ The exact directory contents may contain additional notebooks, datasets, analysi
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
-cd Ride_Hailing_Demand_Prediction
+git clone https://github.com/kavindi23/ride-hailing-demand-analytics-prediction.git
+cd ride-hailing-demand-analytics-prediction
 ```
-
-Replace `<repository-url>` with the GitHub repository URL.
 
 ### 2. Create a Virtual Environment
 
@@ -526,7 +554,7 @@ Open another terminal, activate the same virtual environment, and run:
 streamlit run dashboard/app.py
 ```
 
-The Streamlit application will open in the browser.
+The Streamlit application will then open in the browser.
 
 ---
 
@@ -556,12 +584,12 @@ Power BI is not included in `requirements.txt` because it is separate desktop so
 
 The current project has several limitations that should be considered when interpreting predictions:
 
-- Historical demand data currently covers January 2025.
-- Long-range predictions rely on historical demand patterns rather than real-time demand information.
-- Weather conditions are not included.
-- Public holidays and special events are not explicitly modeled.
-- Traffic conditions are not included.
-- The current application operates locally unless separately deployed.
+- Historical demand data currently covers January 2025
+- Long-range predictions rely on historical demand patterns rather than real-time demand information
+- Weather conditions are not included
+- Public holidays and special events are not explicitly modeled
+- Traffic conditions are not included
+- The current application operates locally unless separately deployed
 
 These limitations provide opportunities for future development.
 
