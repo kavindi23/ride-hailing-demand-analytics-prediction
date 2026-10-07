@@ -1,0 +1,94 @@
+# ==========================================
+# Python
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+
+
+# ==========================================
+# Virtual Environments
+# ==========================================
+.venv/
+venv/
+env/
+
+
+# ==========================================
+# Jupyter Notebook
+# ==========================================
+.ipynb_checkpoints/
+
+
+# ==========================================
+# IDE / Editor Files
+# ==========================================
+.vscode/
+.idea/
+
+
+# ==========================================
+# Operating System Files
+# ==========================================
+.DS_Store
+Thumbs.db
+
+
+# ==========================================
+# Python / Test Cache
+# ==========================================
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+
+# ==========================================
+# Logs and Temporary Files
+# ==========================================
+*.log
+*.tmp
+*.temp
+
+
+# ==========================================
+# Local Backup Files
+# ==========================================
+*_backup.py
+*.bak
+
+
+# ==========================================
+# Environment / Secret Files
+# ==========================================
+.env
+.env.*
+*.env
+
+
+# ==========================================
+# Large Raw Data
+# ==========================================
+data/raw/
+
+
+# ==========================================
+# Large Processed Data
+# ==========================================
+
+# Large processed trip dataset
+data/processed/trips_analytics_2025_01.parquet
+
+# Large CSV demand datasets
+data/processed/hourly_zone_demand_2025_01.csv
+data/processed/hourly_zone_demand_sql_2025_01.csv
+
+# ML-ready processed dataset
+data/processed/ml_ready_demand_2025_01.parquet
+
+
+# ==========================================
+# IMPORTANT:
+# Keep the small hourly demand dataset
+# required by the FastAPI application
+# ==========================================
+!data/processed/hourly_zone_demand_2025_01.parquet
