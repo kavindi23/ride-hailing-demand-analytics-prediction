@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+
 from datetime import datetime
 from textwrap import dedent
 
@@ -28,101 +29,133 @@ API_BASE_URL = "http://127.0.0.1:8000"
 
 st.markdown(
     """
-<style>
-.prediction-card {
-    background-color: #161b22;
-    border: 1px solid #30363d;
-    border-radius: 14px;
-    padding: 30px;
-    text-align: center;
-    margin-top: 10px;
-    margin-bottom: 25px;
-}
+    <style>
 
-.prediction-label {
-    font-size: 18px;
-    font-weight: 600;
-    color: #c9d1d9;
-    margin-bottom: 8px;
-}
+    /* --------------------------------------------------
+       HIDE STREAMLIT DEPLOY BUTTON ONLY
+       -------------------------------------------------- */
 
-.prediction-value {
-    font-size: 52px;
-    font-weight: 700;
-    color: #ffffff;
-    line-height: 1.2;
-}
+    .stDeployButton,
+    [data-testid="stDeployButton"],
+    [data-testid="stAppDeployButton"] {
+        display: none !important;
+    }
 
-.prediction-description {
-    font-size: 15px;
-    color: #8b949e;
-    margin-top: 6px;
-    margin-bottom: 18px;
-}
 
-.low-demand {
-    display: inline-block;
-    background-color: rgba(46, 160, 67, 0.15);
-    color: #56d364;
-    border: 1px solid rgba(46, 160, 67, 0.35);
-    border-radius: 20px;
-    padding: 7px 16px;
-    font-weight: 600;
-}
+    /* --------------------------------------------------
+       PREDICTION CARD
+       -------------------------------------------------- */
 
-.medium-demand {
-    display: inline-block;
-    background-color: rgba(210, 153, 34, 0.15);
-    color: #e3b341;
-    border: 1px solid rgba(210, 153, 34, 0.35);
-    border-radius: 20px;
-    padding: 7px 16px;
-    font-weight: 600;
-}
+    .prediction-card {
+        background-color: #161b22;
+        border: 1px solid #30363d;
+        border-radius: 14px;
+        padding: 30px;
+        text-align: center;
+        margin-top: 10px;
+        margin-bottom: 25px;
+    }
 
-.high-demand {
-    display: inline-block;
-    background-color: rgba(248, 81, 73, 0.15);
-    color: #ff7b72;
-    border: 1px solid rgba(248, 81, 73, 0.35);
-    border-radius: 20px;
-    padding: 7px 16px;
-    font-weight: 600;
-}
+    .prediction-label {
+        font-size: 18px;
+        font-weight: 600;
+        color: #c9d1d9;
+        margin-bottom: 8px;
+    }
 
-.info-card {
-    background-color: #161b22;
-    border: 1px solid #30363d;
-    border-radius: 14px;
-    padding: 22px;
-    min-height: 150px;
-}
+    .prediction-value {
+        font-size: 52px;
+        font-weight: 700;
+        color: #ffffff;
+        line-height: 1.2;
+    }
 
-.info-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: #c9d1d9;
-    margin-bottom: 18px;
-}
+    .prediction-description {
+        font-size: 15px;
+        color: #8b949e;
+        margin-top: 6px;
+        margin-bottom: 18px;
+    }
 
-.info-value {
-    font-size: 18px;
-    font-weight: 600;
-    color: #ffffff;
-    margin-bottom: 6px;
-}
 
-.info-caption {
-    font-size: 14px;
-    color: #8b949e;
-}
+    /* --------------------------------------------------
+       DEMAND LEVEL BADGES
+       -------------------------------------------------- */
 
-div.stButton > button {
-    width: 100%;
-    font-weight: 600;
-}
-</style>
-""",
+    .low-demand {
+        display: inline-block;
+        background-color: rgba(46, 160, 67, 0.15);
+        color: #56d364;
+        border: 1px solid rgba(46, 160, 67, 0.35);
+        border-radius: 20px;
+        padding: 7px 16px;
+        font-weight: 600;
+    }
+
+    .medium-demand {
+        display: inline-block;
+        background-color: rgba(210, 153, 34, 0.15);
+        color: #e3b341;
+        border: 1px solid rgba(210, 153, 34, 0.35);
+        border-radius: 20px;
+        padding: 7px 16px;
+        font-weight: 600;
+    }
+
+    .high-demand {
+        display: inline-block;
+        background-color: rgba(248, 81, 73, 0.15);
+        color: #ff7b72;
+        border: 1px solid rgba(248, 81, 73, 0.35);
+        border-radius: 20px;
+        padding: 7px 16px;
+        font-weight: 600;
+    }
+
+
+    /* --------------------------------------------------
+       INFORMATION CARDS
+       -------------------------------------------------- */
+
+    .info-card {
+        background-color: #161b22;
+        border: 1px solid #30363d;
+        border-radius: 14px;
+        padding: 22px;
+        min-height: 150px;
+    }
+
+    .info-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #c9d1d9;
+        margin-bottom: 18px;
+    }
+
+    .info-value {
+        font-size: 18px;
+        font-weight: 600;
+        color: #ffffff;
+        margin-bottom: 6px;
+    }
+
+    .info-caption {
+        font-size: 14px;
+        color: #8b949e;
+    }
+
+
+    /* --------------------------------------------------
+       PREDICTION BUTTON
+       -------------------------------------------------- */
+
+    div.stButton > button {
+        width: 100%;
+        font-weight: 600;
+    }
+
+    </style>
+    """,
     unsafe_allow_html=True
 )
 
@@ -148,28 +181,33 @@ st.divider()
 
 @st.cache_data
 def load_zones():
+
     try:
+
         response = requests.get(
             f"{API_BASE_URL}/zones",
             timeout=10
         )
 
         if response.status_code == 200:
+
             data = response.json()
 
             if isinstance(data, list):
                 return data
 
-            if isinstance(data, dict):
+            elif isinstance(data, dict):
+
                 if "zones" in data:
                     return data["zones"]
 
-                if "pickup_zones" in data:
+                elif "pickup_zones" in data:
                     return data["pickup_zones"]
 
         return []
 
     except requests.exceptions.RequestException:
+
         return []
 
 
@@ -181,6 +219,7 @@ zones = load_zones()
 # --------------------------------------------------
 
 if not zones:
+
     st.error(
         "Could not load pickup zones from the API. "
         "Make sure FastAPI is running on port 8000."
@@ -203,6 +242,7 @@ col1, col2, col3 = st.columns(3)
 # --------------------------------------------------
 
 with col1:
+
     selected_zone = st.selectbox(
         "📍 Pickup Zone",
         zones,
@@ -219,6 +259,7 @@ with col1:
 # --------------------------------------------------
 
 with col2:
+
     prediction_date = st.date_input(
         "🗓️ Prediction Date"
     )
@@ -229,6 +270,7 @@ with col2:
 # --------------------------------------------------
 
 with col3:
+
     prediction_hour = st.selectbox(
         "🕐 Prediction Hour",
         range(24),
@@ -257,11 +299,13 @@ if st.button(
     # --------------------------------------------------
 
     if isinstance(selected_zone, dict):
+
         pickup_location_id = selected_zone["PULocationID"]
         zone_name = selected_zone["Zone"]
         borough = selected_zone["Borough"]
 
     else:
+
         st.error(
             "Invalid zone information received from API."
         )
@@ -328,6 +372,7 @@ if st.button(
                 "predicted_demand"
             )
 
+
             if predicted_demand is not None:
 
                 predicted_demand = float(
@@ -350,16 +395,19 @@ if st.button(
                 # --------------------------------------------------
 
                 if predicted_demand < 100:
+
                     demand_level = "Low Demand"
                     demand_class = "low-demand"
                     demand_icon = "🟢"
 
                 elif predicted_demand < 250:
+
                     demand_level = "Medium Demand"
                     demand_class = "medium-demand"
                     demand_icon = "🟡"
 
                 else:
+
                     demand_level = "High Demand"
                     demand_class = "high-demand"
                     demand_icon = "🔴"
@@ -412,7 +460,10 @@ if st.button(
                 )
 
 
+                # --------------------------------------------------
                 # PICKUP ZONE CARD
+                # --------------------------------------------------
+
                 with result_col1:
 
                     zone_card = dedent(
@@ -431,7 +482,10 @@ if st.button(
                     )
 
 
+                # --------------------------------------------------
                 # DATE CARD
+                # --------------------------------------------------
+
                 with result_col2:
 
                     date_card = dedent(
@@ -450,7 +504,10 @@ if st.button(
                     )
 
 
+                # --------------------------------------------------
                 # HOUR CARD
+                # --------------------------------------------------
+
                 with result_col3:
 
                     hour_card = dedent(
@@ -489,7 +546,9 @@ if st.button(
                     "in the API response."
                 )
 
-                st.json(result)
+                st.json(
+                    result
+                )
 
 
         # --------------------------------------------------
@@ -505,21 +564,38 @@ if st.button(
             )
 
             try:
+
                 error_data = response.json()
 
                 if isinstance(error_data, dict):
-                    detail = error_data.get("detail")
+
+                    detail = error_data.get(
+                        "detail"
+                    )
 
                     if detail:
-                        st.warning(str(detail))
+
+                        st.warning(
+                            str(detail)
+                        )
+
                     else:
-                        st.json(error_data)
+
+                        st.json(
+                            error_data
+                        )
 
                 else:
-                    st.json(error_data)
+
+                    st.json(
+                        error_data
+                    )
 
             except Exception:
-                st.write(response.text)
+
+                st.write(
+                    response.text
+                )
 
 
     # --------------------------------------------------
